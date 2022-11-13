@@ -1,0 +1,56 @@
+<html>
+<script src="index.js" type="module"></script>
+<link rel="stylesheet" href="index.css">
+
+<body>
+    <div id="form">
+        <h1>Sentiment Analysis</h1>
+        <label for="text">Review</label>
+        <textarea id="inputTextArea" rows="4" cols="50"></textarea>
+
+        <form>
+            <fieldset>
+                <legend>Select Model:</legend>
+                <input type="radio" id="all" name="model" value="all" checked>
+                <label for="all">all</label>
+                <br/>
+                <input type="radio" id="sentiment-roberta" name="model" value="sentiment-roberta">
+                <label for="sentiment-roberta">sentiment-roberta</label>
+                <br>
+                <input type="radio" id="twitter-roberta" name="model" value="twitter-roberta">
+                <label for="twitter-roberta">twitter-roberta</label>
+                <br>
+                <input type="radio" id="bertweet-base-sentiment" name="model" value="bertweet-base-sentiment">
+                <label for="bertweet-base-sentiment">bertweet-base-sentiment</label>
+                <br/>
+                <input type="radio" id="sentiment_analysis_generic" name="model" value="sentiment_analysis_generic">
+                <label for="sentiment_analysis_generic">sentiment_analysis_generic</label>
+            </fieldset>
+        </form>
+
+        <label for="accessToken">Token:</label>
+        <br />
+        <input id="accessToken" class="token-input" type="password"></input>
+        <br />
+        <label for="apiKey">Api Key:</label>
+        <br />
+        <input id="apiKey" class="token-input" type="password"></input>
+        <br />
+        <button id="submitButton">Submit</button>
+        <p id="result"></p>
+    </div>
+
+    <!-- https://codepen.io/Jake_Leggett/pen/kKgmJg -->
+    <div id="loadingDiv" class="loading">
+        <!-- We make this div spin -->
+        <div class="spinner">
+            <!-- Mask of the quarter of circle -->
+            <div class="mask">
+                <!-- Inner masked circle -->
+                <div class="maskedCircle"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
