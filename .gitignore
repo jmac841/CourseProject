@@ -2,3 +2,6 @@ apiData.js
 node_modules
 .DS_Store
 .env
+venv
+__pycache__
+local_backend/models

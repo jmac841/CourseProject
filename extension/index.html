@@ -6,36 +6,27 @@
     <div id="form">
         <h1>Sentiment Analysis</h1>
         <label for="text">Review</label>
-        <textarea id="inputTextArea" rows="4" cols="50"></textarea>
-
+        <textarea id="inputTextArea" rows="4" cols="50" maxlength="2000"></textarea>
         <form>
             <fieldset>
                 <legend>Select Model:</legend>
-                <input type="radio" id="all" name="model" value="all" checked>
-                <label for="all">all</label>
+                <input type="radio" id="combination" name="model" value="combination" checked>
+                <label for="combination">Combination</label>
                 <br/>
-                <input type="radio" id="sentiment-roberta" name="model" value="sentiment-roberta">
-                <label for="sentiment-roberta">sentiment-roberta</label>
+                <input type="radio" id="distilbert" name="model" value="distilbert">
+                <label for="distilbert">DistilBERT</label>
                 <br>
-                <input type="radio" id="twitter-roberta" name="model" value="twitter-roberta">
-                <label for="twitter-roberta">twitter-roberta</label>
+                <input type="radio" id="roberta" name="model" value="roberta">
+                <label for="roberta">RoBERTa</label>
                 <br>
-                <input type="radio" id="bertweet-base-sentiment" name="model" value="bertweet-base-sentiment">
-                <label for="bertweet-base-sentiment">bertweet-base-sentiment</label>
-                <br/>
-                <input type="radio" id="sentiment_analysis_generic" name="model" value="sentiment_analysis_generic">
-                <label for="sentiment_analysis_generic">sentiment_analysis_generic</label>
+                <input type="radio" id="bert_mlm" name="model" value="bert_mlm">
+                <label for="bert_mlm">BERT MLM</label>
+                <br>
+                <input type="radio" id="bert_twitter" name="model" value="bert_twitter">
+                <label for="bert_twitter">BERT Twitter</label>
+                <br>
             </fieldset>
         </form>
-
-        <label for="accessToken">Token:</label>
-        <br />
-        <input id="accessToken" class="token-input" type="password"></input>
-        <br />
-        <label for="apiKey">Api Key:</label>
-        <br />
-        <input id="apiKey" class="token-input" type="password"></input>
-        <br />
         <button id="submitButton">Submit</button>
         <p id="result"></p>
     </div>
@@ -52,5 +43,4 @@
         </div>
     </div>
 </body>
-
 </html>

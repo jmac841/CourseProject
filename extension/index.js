@@ -1,43 +1,33 @@
-const url = 'https://mquqv03qgi.execute-api.us-east-1.amazonaws.com/dev'
+const url = 'http://localhost:5000/'
 
 const submit = async () => {
     const textData = document.getElementById("inputTextArea").value
-    const token = document.getElementById("accessToken").value
-    const apiKey = document.getElementById("apiKey").value
 
     document.getElementById("loadingDiv").style.display = 'block';
     document.getElementById("form").style.visibility = 'hidden';
-    document.getElementById("inputTextArea").value = '';
 
     let result = ''
+    let color = ''
     try {
         const rawResponse = await fetch(url, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': token,
-                'x-api-key': apiKey
             },
-            body: JSON.stringify({ data: textData })
+            body: JSON.stringify({
+                text: textData,
+                model: document.querySelector('input[name="model"]:checked').value
+            })
         })
-        
+
         const content = await rawResponse.json();
-        let color = 'red'
-        switch (content.statusCode) {
-            case 200:
-                result = `Sentiment is: ${content.body}`
-                color = 'black'
-                break
-            case 400:
-                result = 'Bad Request'
-                break
-            case 401:
-                result = 'Unauthorized'
-                break
-            default:
-                result = 'An unexpected error has occured'
-                break
+        if (statusCode === 200) {
+            result = `Sentiment is: ${content.body}`
+            color = 'black'
+        } else {
+            result = 'An unexpected error has occured'
+            color = 'red'
         }
 
         document.getElementById('result').innerText = result
@@ -51,8 +41,19 @@ const submit = async () => {
     document.getElementById("loadingDiv").style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function (event) {
+document.addEventListener('DOMContentLoaded', async function (event) {
     document.getElementById("submitButton").addEventListener("click", submit);
     document.getElementById("loadingDiv").style.display = 'none';
-    document.getElementById("loadingDiv").style.visibility = 'hidden';
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    let result;
+    try {
+        [{ result }] = await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            function: () => getSelection().toString(),
+        });
+        document.getElementById("inputTextArea").value = result
+    } catch (e) {
+        return;
+    }
+    document.getElementById('submitButton').focus()
 });
