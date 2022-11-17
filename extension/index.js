@@ -22,11 +22,11 @@ const submit = async () => {
         })
 
         const content = await rawResponse.json();
-        if (statusCode === 200) {
+        if (content.statusCode === 200) {
             result = `Sentiment is: ${content.body}`
             color = 'black'
         } else {
-            result = 'An unexpected error has occured'
+            result = content.body
             color = 'red'
         }
 
@@ -44,6 +44,7 @@ const submit = async () => {
 document.addEventListener('DOMContentLoaded', async function (event) {
     document.getElementById("submitButton").addEventListener("click", submit);
     document.getElementById("loadingDiv").style.display = 'none';
+    // https://stackoverflow.com/questions/68542700/getting-selected-text-in-a-chrome-extension
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     let result;
     try {
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function (event) {
         });
         document.getElementById("inputTextArea").value = result
     } catch (e) {
-        return;
+        console.error(e.message)
     }
     document.getElementById('submitButton').focus()
 });

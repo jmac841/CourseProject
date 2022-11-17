@@ -1,28 +1,35 @@
-from flask import Flask as Flask, request as request
+from flask import Flask, request
 from transformers import pipeline
+import os
 
-distilbert = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english") # https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english?text=I+like+you.+I+love+you
-roberta = pipeline("sentiment-analysis",model="siebert/sentiment-roberta-large-english") # https://huggingface.co/siebert/sentiment-roberta-large-english?text=I+like+you.+I+love+you
-bert_mlm = pipeline("sentiment-analysis",model="Seethal/sentiment_analysis_generic_dataset") # https://huggingface.co/Seethal/sentiment_analysis_generic_dataset?text=I+like+you.+I+love+you
-bert_twitter = pipeline("sentiment-analysis",model="cardiffnlp/twitter-roberta-base-sentiment") # https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment?text=I+like+you.+I+love+you
+distilbert = None
+roberta = None
+bert_base = None
+bert_twitter = None
 
 
-# can write to file to avoid downloading everytime server starts
+if "LOAD_MODELS" in os.environ and os.environ['LOAD_MODELS'] == 'true':
+    print('* Loading saved models')
+    distilbert = pipeline('sentiment-analysis',model='./models/distilbert') 
+    roberta = pipeline("sentiment-analysis",model='./models/roberta') 
+    bert_base = pipeline("sentiment-analysis",model='./models/bert_mlm') 
+    bert_twitter = pipeline("sentiment-analysis",model='./models/roberta_twitter') 
+else:
+    distilbert = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english") # https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english?text=I+like+you.+I+love+you
+    roberta = pipeline("sentiment-analysis",model="siebert/sentiment-roberta-large-english") # https://huggingface.co/siebert/sentiment-roberta-large-english?text=I+like+you.+I+love+you
+    bert_mlm = pipeline("sentiment-analysis",model="Seethal/sentiment_analysis_generic_dataset") # https://huggingface.co/Seethal/sentiment_analysis_generic_dataset?text=I+like+you.+I+love+you
+    bert_twitter = pipeline("sentiment-analysis",model="cardiffnlp/twitter-roberta-base-sentiment") # https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment?text=I+like+you.+I+love+you
 
-# distilbert.save_pretrained('./models/distilbert')
-# roberta.save_pretrained('./models/roberta')
-# bert_twitter.save_pretrained('./models/roberta_twitter')
-# bert_mlm.save_pretrained('./models/bert_mlm')
-
-# distilbert = pipeline('sentiment-analysis',model='./models/distilbert') 
-# roberta = pipeline("sentiment-analysis",model='./models/roberta') 
-# bert_mlm = pipeline("sentiment-analysis",model='./models/bert_mlm') 
-# bert_twitter = pipeline("sentiment-analysis",model='./models/roberta_twitter') 
+if "SAVE_MODELS" in os.environ and os.environ['SAVE_MODELS'] == 'true':
+    distilbert.save_pretrained('./models/distilbert')
+    roberta.save_pretrained('./models/roberta')
+    bert_twitter.save_pretrained('./models/roberta_twitter')
+    bert_mlm.save_pretrained('./models/bert_mlm')
 
 models = {
     'distilbert': distilbert,
     'roberta': roberta,
-    'bert_mlm': bert_mlm,
+    'bert_base': bert_base,
     'bert_twitter': bert_twitter
 }
 
@@ -49,7 +56,7 @@ def classify():
             results = [
                 distilbert(text),
                 roberta(text),
-                bert_mlm(text),
+                bert_base(text),
                 bert_twitter(text)
             ]
 
@@ -79,7 +86,7 @@ def classify():
     except Exception as e:
         return {
             'statusCode': 500,
-            'body': e
+            'body': str(e)
         }
 
 
