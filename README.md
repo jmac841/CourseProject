@@ -2,23 +2,29 @@
 
 ## Evaluation
 
-Have you completed what you have planned? Have you got the expected outcome? If not, discuss why.
+**Have you completed what you have planned?**
 
 I have completed the overall goal of creating a sentiment analysis Chrome extension, but I had to make some changes along the way. 
 
 I had originally planned to create my own sentiment analysis model, but I had trouble creating an accurate model. My attempts performed poorly and took a significant amount of time to train. Because of this I used pre-trained models in the backend instead. These models were significanlty more accurate. The pre-trained models were also fast enough that I could use multiple models and return the highest rated answer.
 
-I had also originally planned to create my backend in AWS. I was able to get the backend working in AWS, but it wasn't reliable. I set up an API Gateway connected to a Lambda function, which invoked a SageMaker endpoint that made predictions using my models. I ran into issues with the models sometimes taking too long for the API Gateway. The max Gateway time limit of 30 seconds wasn't always enough time for the models to complete. This could have been addressed by putting my API on an EC2 instance or exposing the SageMaker endpoint directly. I chose not to do that becuase I didn't want to pay for it, so instead I ran the backend locally.
+I had also originally planned to create my backend in AWS. I was able to get the backend working in AWS, but it wasn't reliable. I set up an API Gateway connected to a Lambda function, which invoked a SageMaker endpoint that made predictions using my models. I ran into issues with the models sometimes taking too long for the API Gateway. The max API Gateway timeout of 30 seconds wasn't always enough time for the models to complete. This could have been addressed by putting my API on an EC2 instance or exposing the SageMaker endpoint directly. I chose not to do that becuase I didn't want to pay for it, so instead I ran the backend locally.
 
-The models were evaluated using 500 reviews from this Amazon video game data set found [here](https://nijianmo.github.io/amazon/index).
+**Have you got the expected outcome? If not, discuss why.**
+
+I was able to achieve the expected outcome but in a different way. Due to the resource requirements of training a sentiment analysis model, it proved to be more effective to utilize pre-trained models.
+
+The pre-trained models performed well when they were evaluated using 500 reviews from this Amazon video game [review dataset](https://nijianmo.github.io/amazon/index). The notebook used for testing can be found in the model_testing directory.
+
+Tutorial video can be found [here](https://uillinoisedu-my.sharepoint.com/:v:/g/personal/jcmcdow2_illinois_edu/EbUMzZWet8ZNtbpjDcAa4KwBk4EXIoTBX6Ksw5NaWKFXZQ?e=8SEylQ).
 
 ## Purpose
 
-Chrome extenstion that allows sentiment analysis to be run on a selected text. The UI accepts the selected text and sends a POST request to a backend. This backend server can be run locally. The backend is expected to be running at localhost:5000.
+Chrome extenstion that allows sentiment analysis to be run on selected text. The UI accepts the selected text and sends a POST request to a backend. This backend server can be run locally. The backend is expected to be running at localhost:5000.
 
 ## Models
 
-There are 5 options for runnnig sentiment analysis
+There are 5 options for running sentiment analysis.
 
 <table>
   <tr>
@@ -76,19 +82,19 @@ There are 5 options for runnnig sentiment analysis
 
 ### Combination
 
-This model runs all 4 models and tracks the total positive, neutral and negative score. It will return the sentiment with the highest score. 
+This option runs all 4 models and keeps a running total for the positive, neutral and negative score. It will return the sentiment with the highest cumulative score. This model tends to return postive or negative due to the fact that two models only return positive/negative. It's possible that neutral can be returned, but only if one neutral model receives a high score and all others are low. 
 
 ### DistilBERT
 
 This option uses [distilbert-base-uncased-finetuned-sst-2-english](https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english?text=I+like+you.+I+love+you) which is a checkpoint of [distilbert-base-uncased](https://huggingface.co/distilbert-base-uncased?text=Paris+is+the+%5BMASK%5D+of+France.) that was tuned for text classification.
 
-This model was created to be smaller and faster version of BERT. This allows for the extension to make fast inferences. This model was trained on the same data as BERT, using BERT output as the labels. 
+This model was created to be smaller and faster version of BERT. This allows the extension to make fast inferences. This model was trained on the same data as BERT, using BERT output as the labels. 
 
 This model is case insentive and will return either POSITIVE or NEGATIVE.
 
 ### RoBERTa
 
-This option uses [siebert/sentiment-roberta-large-english](https://huggingface.co/siebert/sentiment-roberta-large-english?text=I+like+you.+I+love+you) which is a checkpoint of [roberta-large](https://huggingface.co/roberta-large?text=The+goal+of+life+is+%3Cmask%3E) tuned for text classification. RoBERTa is another optimized version of BERT. RoBERTa proposes that BERT required additional training and hyper parameter tuning. The original paper can be found [here](https://arxiv.org/abs/1907.11692)
+This option uses [siebert/sentiment-roberta-large-english](https://huggingface.co/siebert/sentiment-roberta-large-english?text=I+like+you.+I+love+you) which is a checkpoint of [roberta-large](https://huggingface.co/roberta-large?text=The+goal+of+life+is+%3Cmask%3E) tuned for text classification. RoBERTa is another optimized version of BERT. RoBERTa proposes that BERT required additional training and hyper parameter tuning. The original paper can be found [here](https://arxiv.org/abs/1907.11692).
 
 This model is case sensitive and will return either POSITIVE or NEGATIVE.
 
@@ -128,7 +134,7 @@ Steps (virtual environment recommended)
 
 Saving models (optional)
 
-By default the backend will redownload the models everytime it is started. By setting certain environment variables you can store the models locally, and load from there. The following instructions work for bash. Other operating systems may have different ways of setting environment variables 
+By default the backend will redownload the models everytime it is started. By setting certain environment variables you can store the models locally, and load from there. The following instructions work for zsh. Other shells may have different ways of setting environment variables 
 
 - on the first run set the SAVE_MODELS to true: ``` export SAVE_MODELS=true && python3 -m flask run ```
 - set the LOAD_MODELS variable for subsequent runs: ``` export LOAD_MODELS=true && python3 -m flask run ```
@@ -142,3 +148,25 @@ By default the backend will redownload the models everytime it is started. By se
 - Submit
 
 After these steps, the sentiment should be displayed at the bottom of the modal.
+
+## Citations
+
+cardiffnlp/twitter-roberta-base-sentiment.
+https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment?text=I+like+you.+I+love+you
+
+distilbert-base-uncased-finetuned-sst-2-english.
+https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english?text=I+like+you.+I+love+you
+
+Justifying recommendations using distantly-labeled reviews and fined-grained aspects.
+Jianmo Ni, Jiacheng Li, Julian McAuley.
+Empirical Methods in Natural Language Processing (EMNLP), 2019.
+https://nijianmo.github.io/amazon/index
+
+More than a feeling: Accuracy and Application of Sentiment Analysis.
+Hartmann, Jochen and Heitmann, Mark and Siebert, Christian and Schamp, Christina.
+International Journal of Research in Marketing, 2022.
+https://huggingface.co/siebert/sentiment-roberta-large-english?text=I+like+you.+I+love+you
+
+Seethal/sentiment_analysis_generic_dataset.
+https://huggingface.co/Seethal/sentiment_analysis_generic_dataset?text=I+like+you.+I+love+you
+
