@@ -5,3 +5,4 @@ node_modules
 venv
 __pycache__
 local_backend/models
+reviews_Video_Games.json.gz
