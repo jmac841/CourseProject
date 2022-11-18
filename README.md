@@ -123,7 +123,7 @@ This model is case sentive and will return Label_2 (Positive), Label_1 (Neutral)
 
 Steps (virtual environment recommended)
 - open terminal
-- move into ./local_backend directory and install the dependencies from the requirements.txt file: ```pip install -r requirements.txt```
+- move into the project directory and install the dependencies from the requirements.txt file: ```pip install -r requirements.txt```
 - start local server from local_backend directory with: ``` python3 -m flask run ```
 
 Saving models (optional)

@@ -3,6 +3,7 @@ node_modules
 .DS_Store
 .env
 venv
+cs410
 __pycache__
 local_backend/models
 reviews_Video_Games.json.gz

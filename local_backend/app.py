@@ -15,16 +15,17 @@ if "LOAD_MODELS" in os.environ and os.environ['LOAD_MODELS'] == 'true':
     bert_base = pipeline("sentiment-analysis",model='./models/bert_mlm') 
     bert_twitter = pipeline("sentiment-analysis",model='./models/roberta_twitter') 
 else:
+    print('* Downloading models')
     distilbert = pipeline("sentiment-analysis",model="distilbert-base-uncased-finetuned-sst-2-english") # https://huggingface.co/distilbert-base-uncased-finetuned-sst-2-english?text=I+like+you.+I+love+you
     roberta = pipeline("sentiment-analysis",model="siebert/sentiment-roberta-large-english") # https://huggingface.co/siebert/sentiment-roberta-large-english?text=I+like+you.+I+love+you
-    bert_mlm = pipeline("sentiment-analysis",model="Seethal/sentiment_analysis_generic_dataset") # https://huggingface.co/Seethal/sentiment_analysis_generic_dataset?text=I+like+you.+I+love+you
+    bert_base = pipeline("sentiment-analysis",model="Seethal/sentiment_analysis_generic_dataset") # https://huggingface.co/Seethal/sentiment_analysis_generic_dataset?text=I+like+you.+I+love+you
     bert_twitter = pipeline("sentiment-analysis",model="cardiffnlp/twitter-roberta-base-sentiment") # https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment?text=I+like+you.+I+love+you
 
 if "SAVE_MODELS" in os.environ and os.environ['SAVE_MODELS'] == 'true':
     distilbert.save_pretrained('./models/distilbert')
     roberta.save_pretrained('./models/roberta')
     bert_twitter.save_pretrained('./models/roberta_twitter')
-    bert_mlm.save_pretrained('./models/bert_mlm')
+    bert_base.save_pretrained('./models/bert_mlm')
 
 models = {
     'distilbert': distilbert,
@@ -76,6 +77,7 @@ def classify():
             else:
                 sentiment = 'NEUTRAL'
         else:
+            print(model)
             res = models[model](text)
             sentiment = parse_label(res[0])['label']
 
